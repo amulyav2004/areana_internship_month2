@@ -1,0 +1,57 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card p-0" style="height: 70vh; display: flex; flex-direction: column;">
+            <!-- Chat Header -->
+            <div class="p-3 border-bottom d-flex align-items-center bg-white sticky-top"
+                style="border-radius: 20px 20px 0 0;">
+                <a href="{% url 'inbox' %}" class="btn btn-link link-dark me-2"><i
+                        class="bi bi-chevron-left h4 mb-0"></i></a>
+                {% if other_user.profile.avatar %}
+                <img src="{{ other_user.profile.avatar.url }}" class="rounded-circle me-3" width="40" height="40"
+                    style="object-fit: cover;">
+                {% endif %}
+                <h5 class="mb-0 fw-bold">{{ other_user.username }}</h5>
+            </div>
+
+            <!-- Messages List -->
+            <div class="flex-grow-1 p-4 overflow-auto" id="message-container"
+                style="background: rgba(255,255,255,0.5);">
+                {% for msg in messages %}
+                <div class="d-flex mb-3 {% if msg.sender == user %}justify-content-end{% endif %}">
+                    <div class="p-3 shadow-sm {% if msg.sender == user %}bg-primary text-white{% else %}bg-white text-dark{% endif %}"
+                        style="border-radius: 20px; max-width: 70%;">
+                        {{ msg.content }}
+                        <div class="small mt-1 {% if msg.sender == user %}text-light{% else %}text-muted{% endif %}"
+                            style="font-size: 0.7rem;">
+                            {{ msg.timestamp|time:"H:i" }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Message Input -->
+            <div class="p-4 bg-white border-top" style="border-radius: 0 0 20px 20px;">
+                <form method="POST" class="d-flex gap-2">
+                    {% csrf_token %}
+                    <input type="text" name="content" class="form-control rounded-pill border-0 bg-light px-4"
+                        placeholder="Type a message..." required>
+                    <button type="submit" class="btn btn-primary rounded-circle"
+                        style="width: 45px; height: 45px; padding: 0;">
+                        <i class="bi bi-send-fill"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Scroll to bottom on load
+    const container = document.getElementById('message-container');
+    container.scrollTop = container.scrollHeight;
+</script>
+{% endblock %}

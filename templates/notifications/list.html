@@ -1,0 +1,48 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h4 class="mb-4">Notifications</h4>
+
+        <div class="list-group shadow-sm">
+            {% for n in notifications %}
+            <div
+                class="list-group-item list-group-item-action d-flex align-items-center {% if not n.is_read %}bg-light border-primary{% endif %}">
+                <div class="me-3">
+                    {% if n.notification_type == 'like' %}
+                    <i class="bi bi-heart-fill text-danger h4"></i>
+                    {% elif n.notification_type == 'comment' %}
+                    <i class="bi bi-chat-fill text-primary h4"></i>
+                    {% elif n.notification_type == 'follow' %}
+                    <i class="bi bi-person-plus-fill text-success h4"></i>
+                    {% endif %}
+                </div>
+                <div class="flex-grow-1">
+                    <p class="mb-0">
+                        <strong>{{ n.sender.username }}</strong>
+                        {% if n.notification_type == 'like' %}
+                        liked your <a href="{% url 'post_detail' n.post.id %}" class="text-decoration-none">post</a>.
+                        {% elif n.notification_type == 'comment' %}
+                        commented on your <a href="{% url 'post_detail' n.post.id %}"
+                            class="text-decoration-none">post</a>.
+                        {% elif n.notification_type == 'follow' %}
+                        started following you.
+                        {% endif %}
+                    </p>
+                    <small class="text-muted">{{ n.created_at|timesince }} ago</small>
+                </div>
+                <div>
+                    <a href="{% url 'delete_notification' n.id %}" class="text-muted"><i class="bi bi-x-lg"></i></a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="list-group-item text-center py-5">
+                <i class="bi bi-bell-slash text-muted h1"></i>
+                <p class="text-muted mt-2">No notifications yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

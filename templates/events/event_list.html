@@ -1,0 +1,55 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-white">Upcoming Events</h2>
+        <a href="{% url 'create_event' %}" class="btn btn-primary">Organize Event</a>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        {% for event in events %}
+        <div class="col">
+            <div class="card h-100 p-0 border-0 overflow-hidden">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        {% if event.image %}
+                        <img src="{{ event.image.url }}" class="img-fluid h-100" style="object-fit: cover;">
+                        {% else %}
+                        <div class="bg-secondary h-100 d-flex align-items-center justify-content-center text-white p-3">
+                            <i class="bi bi-calendar-event h1"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">{{ event.title }}</h5>
+                            <p class="text-primary small mb-2">
+                                <i class="bi bi-clock me-1"></i>{{ event.date|date:"F j, Y, g:i a" }}
+                            </p>
+                            <p class="text-muted small mb-3">
+                                <i class="bi bi-geo-alt me-1"></i>{{ event.location }}
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">{{ event.attendees.count }} attending</small>
+                                <a href="{% url 'rsvp_event' event.id %}"
+                                    class="btn btn-sm {% if user in event.attendees.all %}btn-success{% else %}btn-outline-primary{% endif %}">
+                                    {% if user in event.attendees.all %}Going{% else %}RSVP{% endif %}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="card p-5">
+                <i class="bi bi-calendar-x h1 text-muted"></i>
+                <h4 class="text-muted">No events planned. Host one yourself!</h4>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
