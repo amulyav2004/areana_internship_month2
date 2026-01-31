@@ -29,19 +29,18 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light mb-4 shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-light mb-4 shadow-sm sticky-top">
         <div class="container">
             <a class="navbar-brand fw-bold" href="{% url 'home' %}"><i
                     class="bi bi-rocket-takeoff-fill me-2"></i>SocialApp</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <form class="d-flex mx-auto" action="{% url 'search' %}" method="get"
-                    style="max-width: 400px; width: 100%;">
-                    <input class="form-control me-2 rounded-pill bg-light border-0 px-3" type="search" name="q"
-                        placeholder="Search..." aria-label="Search">
-                </form>
+
+            <form class="d-flex mx-auto desktop-nav" action="{% url 'search' %}" method="get"
+                style="max-width: 400px; width: 100%;">
+                <input class="form-control me-2 rounded-pill bg-light border-0 px-3" type="search" name="q"
+                    placeholder="Search..." aria-label="Search">
+            </form>
+
+            <div class="desktop-nav">
                 <ul class="navbar-nav ms-auto align-items-center gap-2">
                     {% if user.is_authenticated %}
                     <li class="nav-item">
@@ -50,58 +49,66 @@
                             <i class="bi bi-bell-fill mb-0"></i>
                             <span id="unread-count-badge"
                                 class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none"
-                                style="font-size: 0.6rem; margin-left: -5px; margin-top: 5px;">
-                                0
-                            </span>
+                                style="font-size: 0.6rem; margin-left: -5px; margin-top: 5px;">0</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">Feed</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'inbox' %}">Messages</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'group_list' %}">Groups</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'event_list' %}">Events</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Feed</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'inbox' %}">Messages</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'group_list' %}">Groups</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'event_list' %}">Events</a></li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'profile' %}">
                             {% if user.profile.avatar %}
                             <img src="{{ user.profile.avatar.url }}" class="rounded-circle" width="30" height="30"
                                 alt="Profile" style="object-fit: cover;">
-                            {% else %}
-                            Profile
-                            {% endif %}
+                            {% else %}Profile{% endif %}
                         </a>
                     </li>
                     <li class="nav-item">
                         <form action="{% url 'logout' %}" method="post" class="d-inline">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-link nav-link">Logout</button>
+                            {% csrf_token %}<button type="submit" class="btn btn-link nav-link">Logout</button>
                         </form>
                     </li>
                     {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="btn btn-primary ms-2" href="{% url 'signup' %}">Sign Up</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                    <li class="nav-item"><a class="btn btn-primary ms-2" href="{% url 'signup' %}">Sign Up</a></li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container">
+    <!-- Mobile Bottom Navigation -->
+    {% if user.is_authenticated %}
+    <div class="mobile-bottom-nav">
+        <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+            <i class="bi bi-house-door-fill"></i>
+        </a>
+        <a href="{% url 'search' %}" class="{% if request.resolver_match.url_name == 'search' %}active{% endif %}">
+            <i class="bi bi-search"></i>
+        </a>
+        <a href="{% url 'inbox' %}" class="{% if request.resolver_match.url_name == 'inbox' %}active{% endif %}">
+            <i class="bi bi-chat-dots-fill"></i>
+        </a>
+        <a href="{% url 'notification_list' %}"
+            class="{% if request.resolver_match.url_name == 'notification_list' %}active{% endif %}">
+            <i class="bi bi-heart-fill"></i>
+        </a>
+        <a href="{% url 'profile' %}" class="{% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+            {% if user.profile.avatar %}
+            <img src="{{ user.profile.avatar.url }}" class="rounded-circle" width="24" height="24"
+                style="object-fit: cover; border: 2px solid currentColor;">
+            {% else %}
+            <i class="bi bi-person-circle"></i>
+            {% endif %}
+        </a>
+    </div>
+    {% endif %}
+
+    <div class="container pb-5">
         {% if messages %}
         {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
-            {{ message }}
-        </div>
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
         {% endfor %}
         {% endif %}
         {% block content %}{% endblock %}
