@@ -25,11 +25,14 @@ A modern, feature-rich social media platform built with Django.
 - `templates/`: Global HTML templates.
 - `static/`: Static assets (CSS, JS, Images).
 
-## Setup Instructions
+## 🚀 Deployment (One-Click)
 
-### Prerequisites
-- Python 3.10+
-- pip
+I have set up a **Render Blueprint**. To deploy:
+1. Go to your [Render Dashboard](https://dashboard.render.com/).
+2. Click **"New"** -> **"Blueprint"**.
+3. Connect your GitHub repository.
+4. Render will read the `render.yaml` file and automatically set up the **Web Service**, **Database**, and all **Settings** for you.
+5. Click **"Apply"**.
 
 ### Installation
 1. Clone the repository:
