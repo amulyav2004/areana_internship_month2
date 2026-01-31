@@ -21,6 +21,10 @@
                 <form method="post">
                     {% csrf_token %}
                     {{ form|crispy }}
+                    <div class="text-end mb-3">
+                        <a href="{% url 'password_reset' %}" class="small text-decoration-none"
+                            style="color: var(--accent-color);">Forgot Password?</a>
+                    </div>
                     <div class="d-grid mt-4">
                         <button type="submit" class="btn btn-primary btn-lg shadow">Log In</button>
                     </div>

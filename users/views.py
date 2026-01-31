@@ -65,9 +65,11 @@ def search_view(request):
     users = []
     posts = []
     if query:
-        # Search for users by username or bio
+        # Search for users by username, email, or bio
         users = User.objects.filter(
-            Q(username__icontains=query) | Q(profile__bio__icontains=query)
+            Q(username__icontains=query) | 
+            Q(email__icontains=query) |
+            Q(profile__bio__icontains=query)
         ).select_related('profile').distinct()
         
         # Search for posts by content or author's username

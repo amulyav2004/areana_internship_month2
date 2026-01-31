@@ -111,6 +111,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
+# Email settings for password reset
+# For testing on Render Free Tier, we use console backend (link appears in Logs)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'support@socialapp.example.com'
+
 AUTH_USER_MODEL = 'users.CustomUser'
 
 # Media files
