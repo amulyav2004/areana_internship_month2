@@ -1,6 +1,7 @@
 services:
   - type: web
     name: social-app-premium
+    plan: free
     runtime: python
     buildCommand: "./build.sh"
     startCommand: "gunicorn social_platform.wsgi:application --bind 0.0.0.0:$PORT"
