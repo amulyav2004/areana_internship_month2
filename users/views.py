@@ -65,11 +65,18 @@ def search_view(request):
     users = []
     posts = []
     if query:
-        users = User.objects.filter(username__icontains=query).select_related('profile').exclude(id=request.user.id)
-        posts = Post.objects.filter(Q(content__icontains=query) & Q(is_archived=False))\
-            .select_related('author', 'author__profile')\
-            .prefetch_related('likes', 'comments')\
-            .order_by('-created_at')
+        # Search for users by username or bio
+        users = User.objects.filter(
+            Q(username__icontains=query) | Q(profile__bio__icontains=query)
+        ).select_related('profile').distinct()
+        
+        # Search for posts by content or author's username
+        posts = Post.objects.filter(
+            (Q(content__icontains=query) | Q(author__username__icontains=query)) & 
+            Q(is_archived=False)
+        ).select_related('author', 'author__profile')\
+         .prefetch_related('likes', 'comments')\
+         .order_by('-created_at')
     
     return render(request, 'users/search_results.html', {
         'users': users,
