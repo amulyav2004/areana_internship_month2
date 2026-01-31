@@ -77,6 +77,10 @@ def search_view(request):
         ).select_related('author', 'author__profile')\
          .prefetch_related('likes', 'comments')\
          .order_by('-created_at')
+    else:
+        # If no query, show recently joined users as suggestions
+        users = User.objects.all().select_related('profile').order_by('-date_joined')[:10]
+        posts = []
     
     return render(request, 'users/search_results.html', {
         'users': users,

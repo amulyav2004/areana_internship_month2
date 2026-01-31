@@ -16,11 +16,21 @@ def home(request):
     else:
         form = PostForm()
     
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
+    
     posts = Post.objects.filter(is_archived=False)\
         .select_related('author', 'author__profile')\
         .prefetch_related('likes', 'comments')\
         .order_by('-created_at')
-    return render(request, 'users/home.html', {'posts': posts, 'form': form})
+    
+    suggested_users = User.objects.exclude(id=request.user.id).order_by('-date_joined')[:5]
+    
+    return render(request, 'users/home.html', {
+        'posts': posts, 
+        'form': form, 
+        'suggested_users': suggested_users
+    })
 
 @login_required
 def post_detail(request, post_id):
